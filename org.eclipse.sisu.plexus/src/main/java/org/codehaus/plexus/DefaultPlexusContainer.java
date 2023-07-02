@@ -52,6 +52,7 @@ import org.eclipse.sisu.inject.DeferredProvider;
 import org.eclipse.sisu.inject.InjectorBindings;
 import org.eclipse.sisu.inject.MutableBeanLocator;
 import org.eclipse.sisu.inject.RankingFunction;
+import org.eclipse.sisu.launch.SisuExtensions;
 import org.eclipse.sisu.plexus.ComponentDescriptorBeanModule;
 import org.eclipse.sisu.plexus.DefaultPlexusBeanLocator;
 import org.eclipse.sisu.plexus.Hints;
@@ -478,6 +479,9 @@ public final class DefaultPlexusContainer
         Collections.addAll( modules, customModules );
         modules.add( new PlexusBindingModule( plexusBeanManager, beanModules ) );
         modules.add( defaultsModule );
+        modules.add(binder -> {
+            SisuExtensions.local(new URLClassSpace(containerRealm)).install(binder);
+        });
 
         return Guice.createInjector( isAutoWiringEnabled ? new WireModule( modules ) : new MergedModule( modules ) );
     }
